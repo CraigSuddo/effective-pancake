@@ -6,3 +6,4 @@
 *.ide-wal
 /ConsoleApplication/bin/Debug/netcoreapp2.1
 /ConsoleApplication.Tests/obj
+ConsoleApplication.Logic/obj/*

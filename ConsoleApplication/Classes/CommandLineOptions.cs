@@ -1,11 +1,8 @@
 ﻿using CommandLine;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
+using ConsoleApplication.Logic;
 namespace ConsoleApplication.Classes
 {
-    class CommandLineOptions
+    class CommandLineOptions : IWordLadderProcessorConfiguration
     {
         [Option(Default = "words-english.txt", HelpText = "The input file of words to be used with this software.", Required = true)]
         public string DictionaryFile { get; set; }
@@ -17,8 +14,3 @@ namespace ConsoleApplication.Classes
         public string ResultFile { get; set; }
     }
 }
-
-//DictionaryFile - the file name of a text file containing four letter words(included in the test pack)
-//StartWord - a four letter word(that you can assume is found in the DictionaryFile file)
-//EndWord - a four letter word(that you can assume is found in the DictionaryFile file)
-//ResultFile - the file name of a text file that will contain the result
