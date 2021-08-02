@@ -1,1 +1,2 @@
-# effective-pancake
+# effective pancake
+Got to love Pancakes.
