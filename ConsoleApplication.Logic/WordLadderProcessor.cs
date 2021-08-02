@@ -44,6 +44,7 @@ namespace ConsoleApplication.Logic
             // Clean and then parse anything which is 4 letters into the Words list.
             foreach (var line in lines)
             {
+                // Ensure there is no whitespace.
                 var trimmed = line.Trim();
                 if (trimmed.Length == 4)
                     Words.Add(trimmed.ToUpperInvariant());
