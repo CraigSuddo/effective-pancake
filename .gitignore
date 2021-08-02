@@ -2,3 +2,5 @@
 .vs/ConsoleApplication/DesignTimeBuild/.dtbcache
 .vs/ConsoleApplication/v16/.suo
 /ConsoleApplication/obj
+*.ide-shm
+*.ide-wal
