@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "ConsoleApplication": {
+      "commandName": "Project",
+      "commandLineArgs": "--dictionaryfile words-english.txt --startword spin --endword spot --resultfile output.txt"
+    }
+  }
+}
