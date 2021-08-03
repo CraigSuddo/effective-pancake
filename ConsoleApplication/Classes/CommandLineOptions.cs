@@ -1,5 +1,7 @@
 ﻿using CommandLine;
 using ConsoleApplication.Logic;
+using System.Collections.Generic;
+
 namespace ConsoleApplication.Classes
 {
     class CommandLineOptions : IWordLadderProcessorConfiguration
@@ -12,5 +14,8 @@ namespace ConsoleApplication.Classes
         public string EndWord { get; set; }
         [Option(Default = "output.txt", HelpText = "The output file of words to show the solution.", Required = true)]
         public string ResultFile { get; set; }
+
+        public List<string> Words { get; set; }
+        public int WordLength { get; set; }
     }
 }

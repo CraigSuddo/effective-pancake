@@ -8,8 +8,10 @@ namespace ConsoleApplication.Logic
 {
     internal class Word
     {
-        private string Value { get; set; }
-        private List<string> PotentialMatches { get; set; }
+        public string Value { get; set; }
+        public List<string> Templates { get; set; }
+
+        public List<Word> ConnectedWords { get; set; }
 
         public Word(string value)
         {
@@ -19,7 +21,7 @@ namespace ConsoleApplication.Logic
 
         private void SetupPotentialMatches()
         {
-            PotentialMatches = new List<string>();
+            Templates = new List<string>();
 
             // Replace each character with an underscore to give a list of potential generic matches.
             // For example; spin would be _pin, s_in, sp_n and spi_. This gives me something to join words together with.
@@ -28,7 +30,7 @@ namespace ConsoleApplication.Logic
             {
                 var characters = Value.ToCharArray();
                 characters[i] = '_';
-                PotentialMatches.Add(string.Join("", characters));
+                Templates.Add(string.Join("", characters));
             }
         }
     }

@@ -7,3 +7,6 @@
 /ConsoleApplication/bin/Debug/netcoreapp2.1
 /ConsoleApplication.Tests/obj
 ConsoleApplication.Logic/obj/*
+ConsoleApplication.Logic/bin/*
+ConsoleApplication.Tests/bin/*
+ConsoleApplication/bin/*
