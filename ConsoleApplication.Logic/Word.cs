@@ -17,6 +17,7 @@ namespace ConsoleApplication.Logic
         {
             Value = value;
             SetupPotentialMatches();
+            ConnectedWords = new List<Word>();
         }
 
         private void SetupPotentialMatches()
