@@ -9,6 +9,9 @@ using System.Linq;
 
 namespace ConsoleApplication
 {
+    /// <summary>
+    /// Sets up the application. Means that the entry point of the application is a little cleaner.
+    /// </summary>
     internal static class Startup
     {
         /// <summary>
