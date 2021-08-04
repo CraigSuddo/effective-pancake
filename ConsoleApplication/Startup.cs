@@ -33,6 +33,7 @@ namespace ConsoleApplication
                        host.ConfigureServices((_, services) =>
                            {
                                services.AddSingleton<IWordLadderProcessorConfiguration>(o);
+                               services.AddTransient<IWordLadderProcessorOutput, ConsoleApplicationWordLadderProcessorOutput>();
                                services.AddTransient<IWordLadderProcessor, WordLadderProcessor>();
                            });
                    });

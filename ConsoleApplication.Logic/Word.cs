@@ -33,7 +33,7 @@ namespace ConsoleApplication.Logic
             {
                 var characters = Value.ToCharArray();
                 characters[i] = '_';
-                Templates.Add(string.Join("", characters));
+                Templates.Add(string.Join("", characters).ToUpperInvariant());
             }
         }
     }

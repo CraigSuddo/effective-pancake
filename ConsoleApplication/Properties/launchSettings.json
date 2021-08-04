@@ -2,7 +2,7 @@
   "profiles": {
     "ConsoleApplication": {
       "commandName": "Project",
-      "commandLineArgs": "--dictionaryfile words-english.txt --startword suet --endword Lyle --resultfile output.txt"
+      "commandLineArgs": "--dictionaryfile words-english.txt --startword suet --endword lyle --resultfile output.txt"
     }
   }
 }

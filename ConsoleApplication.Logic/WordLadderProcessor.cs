@@ -8,22 +8,26 @@ namespace ConsoleApplication.Logic
     public class WordLadderProcessor : IWordLadderProcessor
     {
         private IWordLadderProcessorConfiguration _config { get; set; }
+        private IWordLadderProcessorOutput _output { get; set; }
+
         public IWordLadderProcessorResult Result { get; set; }
-        private List<Dictionary<int, Word>> Solutions { get; set; }
-        private List<Word> Words { get; set; }
+        private HashSet<Dictionary<int, Word>> Solutions { get; set; }
+        private HashSet<Word> Words { get; set; }
         private int SearchDepth { get; set; }
 
-        public WordLadderProcessor(IWordLadderProcessorConfiguration config)
+        public WordLadderProcessor(IWordLadderProcessorConfiguration config, IWordLadderProcessorOutput output)
         {
             _config = config;
             Result = new WordLadderProcessorResult();
-            Words = new List<Word>();
-            Solutions = new List<Dictionary<int, Word>>();
+            Words = new HashSet<Word>();
+            Solutions = new HashSet<Dictionary<int, Word>>();
+            _output = output;
         }
 
         public IWordLadderProcessorResult Process()
         {
             SetupWords();
+            var word = Words.FirstOrDefault(w => w.Value == "Lyle");
             SolutionSearch();
             GenerateResult();
 
@@ -37,19 +41,14 @@ namespace ConsoleApplication.Logic
 
             if (shortestSolution == null)
             {
-                Console.WriteLine("No solutions found!");
-                Result.Successful = false;
+                _output.Unsuccessful(Result);
             }
             else
             {
                 Result.Steps = shortestSolution.Select(ss => new { ss.Key, ss.Value.Value })
                                                .ToDictionary(d => d.Key, d => d.Value);
-
-                if (File.Exists(_config.ResultFile))
-                    File.Delete(_config.ResultFile);
-
-                File.WriteAllLines(_config.ResultFile, Result.Steps.Select(s => s.Value).ToArray());
-                Result.OutputFile = _config.ResultFile;
+                Result.Successful = true;
+                _output.Successful(Result);
             }
         }
 
@@ -62,7 +61,7 @@ namespace ConsoleApplication.Logic
                 SearchDepth++;
                 CheckForSolution(start, new List<Word>() { start }, SearchDepth);
             }
-            while (Solutions.Count == 0 && SearchDepth < 15); // Without an upper limit I found 1170 steps... that took a while!
+            while (Solutions.Count == 0  && SearchDepth < 1000); // Without an upper limit I found 1170 steps... that took a while!
         }
 
         private void SetupWords()
@@ -93,14 +92,16 @@ namespace ConsoleApplication.Logic
             foreach (var connectedWord in word.ConnectedWords.Where(cw => !currentChain.Select(cc => cc.Value).Contains(cw.Value)))
             {
                 currentChain.Add(connectedWord);
-                if (connectedWord.Value == _config.EndWord)
+                //Console.WriteLine($"Current Chain (d:{searchDepth}) : {string.Join(",", currentChain.Select(cc => cc.Value).ToList())}");
+                if (connectedWord.Value.ToUpperInvariant() == _config.EndWord.ToUpperInvariant())
                 {
                     // Solution found!
                     AddSolution(currentChain);
                 }
                 else
                 {
-                    // If we are getting close to the word, for example mark to marc, rather than continue looping at the same depth, allow the software to drop one more layer temporarily.
+                    // bump the depth if chars match
+                    var additionalDepth = GetAdditionalDepth(connectedWord.Value, _config.EndWord);
 
                     if (currentChain.Count < searchDepth)
                         CheckForSolution(connectedWord, currentChain, searchDepth);
@@ -109,6 +110,20 @@ namespace ConsoleApplication.Logic
                 // Remove from chain
                 currentChain.Remove(connectedWord);
             }
+        }
+
+        private int GetAdditionalDepth(string value, string endWord)
+        {
+            var result = 0;
+            var upperValue = value.ToUpperInvariant();
+            var upperEndWord = endWord.ToUpperInvariant();
+
+            for (var i =0; i<value.Length;i++)
+            {
+                if (upperValue[i] == upperEndWord[i])
+                    result++;
+            }
+            return result;
         }
 
         private void AddSolution(List<Word> currentChain)

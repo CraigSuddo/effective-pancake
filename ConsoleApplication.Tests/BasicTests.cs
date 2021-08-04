@@ -28,8 +28,10 @@ namespace ConsoleApplication.Tests
                 { 2, "Spot" }
             };
 
+            var output = new UnitTestWordLadderProcessorOutput();
+
             // Act
-            var processor = new WordLadderProcessor(config);
+            var processor = new WordLadderProcessor(config, output);
             var result = processor.Process();
 
             // Assert
