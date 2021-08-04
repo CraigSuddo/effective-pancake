@@ -23,36 +23,15 @@ namespace ConsoleApplication.Logic
 
         public IWordLadderProcessorResult Process()
         {
-            // Find only X letter words, clean down the list so we are only processing using 4 letter words which will reduce memory usage.
-            _config.Words = _config.Words.Where(w => w.Trim().Length == _config.WordLength)
-                                         .ToList();
+            SetupWords();
+            SolutionSearch();
+            GenerateResult();
 
-            // Create the Word objects.
-            _config.Words.ForEach(w => Words.Add(new Word(w)));
+            return Result;
+        }
 
-            // Connect the Word objects.
-            foreach (var word in Words)
-            {
-                foreach (var template in word.Templates)
-                {
-                    var matchingTemplateWords = Words.Where(w => w.Value != word.Value)
-                                                     .Where(w => w.Templates.Contains(template))
-                                                     .ToList();
-
-                    word.ConnectedWords.AddRange(matchingTemplateWords);
-                }
-            }
-
-            // Find all the potential solutions. - This is very slow, some are over 1000 steps long.
-            var start = Words.FirstOrDefault(w => w.Value == _config.StartWord);
-
-            do
-            {
-                SearchDepth++;
-                CheckForSolution(start, new List<Word>() { start }, SearchDepth);
-            }
-            while (Solutions.Count == 0 && SearchDepth < 15); // Without an upper limit I found 1170 steps... that took a while!
-
+        private void GenerateResult()
+        {
             // Return the solution(s) with the least steps - I anticipate that occasionally there may be more than 1 solution from Start - End
             var shortestSolution = Solutions.OrderBy(s => s.Count).FirstOrDefault();
 
@@ -72,8 +51,41 @@ namespace ConsoleApplication.Logic
                 File.WriteAllLines(_config.ResultFile, Result.Steps.Select(s => s.Value).ToArray());
                 Result.OutputFile = _config.ResultFile;
             }
+        }
 
-            return Result;
+        private void SolutionSearch()
+        {
+            // Find all the potential solutions. - This is very slow, some are over 1000 steps long.
+            var start = Words.FirstOrDefault(w => w.Value == _config.StartWord);
+            do
+            {
+                SearchDepth++;
+                CheckForSolution(start, new List<Word>() { start }, SearchDepth);
+            }
+            while (Solutions.Count == 0 && SearchDepth < 15); // Without an upper limit I found 1170 steps... that took a while!
+        }
+
+        private void SetupWords()
+        {
+            // Find only X letter words, clean down the list so we are only processing using 4 letter words which will reduce memory usage.
+            _config.Words = _config.Words.Where(w => w.Trim().Length == _config.WordLength)
+                                         .ToList();
+
+            // Create the Word objects.
+            _config.Words.ForEach(w => Words.Add(new Word(w)));
+
+            // Connect the Word objects.
+            foreach (var word in Words)
+            {
+                foreach (var template in word.Templates)
+                {
+                    var matchingTemplateWords = Words.Where(w => w.Value != word.Value)
+                                                     .Where(w => w.Templates.Contains(template))
+                                                     .ToList();
+
+                    word.ConnectedWords.AddRange(matchingTemplateWords);
+                }
+            }
         }
 
         private void CheckForSolution(Word word, List<Word> currentChain, int searchDepth)
