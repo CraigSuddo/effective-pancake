@@ -18,7 +18,8 @@ namespace ConsoleApplication.Tests
                 EndWord = "Spot",
                 StartWord = "Spin",
                 Words = new List<string> { "Spin", "Spit", "Spat", "Spot", "Span", },
-                WordLength = 4
+                WordLength = 4,
+                ResultFile = "test.txt"
             };
 
             var expectedResult = new Dictionary<int, string>
@@ -33,7 +34,7 @@ namespace ConsoleApplication.Tests
             var result = processor.Process();
 
             // Assert
-            Assert.AreEqual(expectedResult, result);
+            Assert.AreEqual(string.Join(",",expectedResult), string.Join(",", result.Steps));
 
         }
     }
