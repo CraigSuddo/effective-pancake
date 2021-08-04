@@ -16,7 +16,7 @@ namespace ConsoleApplication.Logic
 
         #region Standard OOP Properties 
         private IWordLadderProcessorResult Result { get; set; }
-        private HashSet<Dictionary<int, Word>> Solutions { get; set; }
+        private Dictionary<int, Word> Solution { get; set; }
         private HashSet<Word> Words { get; set; }
         private int SearchDepth { get; set; }
         #endregion
@@ -30,7 +30,6 @@ namespace ConsoleApplication.Logic
             // Object instantiations
             Result = new WordLadderProcessorResult();
             Words = new HashSet<Word>();
-            Solutions = new HashSet<Dictionary<int, Word>>();
         }
 
         /// <summary>
@@ -57,7 +56,7 @@ namespace ConsoleApplication.Logic
                 SearchDepth++;
                 CheckForSolution(start, new List<Word>() { start }, SearchDepth);
             }
-            while (Solutions.Count == 0  && SearchDepth < Words.Count); // Without an upper limit I found one with 1170 steps... that took a while!
+            while (Solution == null && SearchDepth < Words.Count); // Without an upper limit I found one with 1170 steps... that took a while!
                                                                         // You cannot have a search depth beyond all of the words, if you have something has gone wrong!
         }
 
@@ -92,15 +91,12 @@ namespace ConsoleApplication.Logic
         /// </summary>
         private void GenerateResult()
         {
-            // Return the solution(s) with the least steps - I anticipate that occasionally there may be more than 1 solution from Start - End
-            var shortestSolution = Solutions.OrderBy(s => s.Count).FirstOrDefault();
-
-            if (shortestSolution == null)
+            if (Solution == null)
                 _output.Unsuccessful(Result);
             else
             {
-                Result.Steps = shortestSolution.Select(ss => new { ss.Key, ss.Value.Value })
-                                               .ToDictionary(d => d.Key, d => d.Value);
+                Result.Steps = Solution.Select(ss => new { ss.Key, ss.Value.Value })
+                                       .ToDictionary(d => d.Key, d => d.Value);
                 Result.Successful = true;
                 _output.Successful(Result);
             }
@@ -113,6 +109,10 @@ namespace ConsoleApplication.Logic
         /// <param name="searchDepth">The current limit to search to. Ensures that the program tries to find the shortest solutions first.</param>
         private void CheckForSolution(Word word, List<Word> currentChain, int searchDepth)
         {
+            // Attempt to speed this up;
+            if (Solution != null)
+                return;
+
             foreach (var connectedWord in word.ConnectedWords.Where(cw => !currentChain.Select(cc => cc.Value).Contains(cw.Value)))
             {
                 currentChain.Add(connectedWord);
@@ -140,7 +140,7 @@ namespace ConsoleApplication.Logic
         {
             var dictionary = currentChain.Select((c, i) => new { Value = c, Index = i })
                                          .ToDictionary(d => d.Index, d => d.Value);
-            Solutions.Add(dictionary);
+            Solution = dictionary;
         }
     }
 }
