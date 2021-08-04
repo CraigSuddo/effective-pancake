@@ -100,6 +100,8 @@ namespace ConsoleApplication.Logic
                 }
                 else
                 {
+                    // If we are getting close to the word, for example mark to marc, rather than continue looping at the same depth, allow the software to drop one more layer temporarily.
+
                     if (currentChain.Count < searchDepth)
                         CheckForSolution(connectedWord, currentChain, searchDepth);
                 }
