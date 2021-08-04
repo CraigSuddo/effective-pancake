@@ -27,29 +27,10 @@ namespace ConsoleApplication.Logic
         public IWordLadderProcessorResult Process()
         {
             SetupWords();
-            var word = Words.FirstOrDefault(w => w.Value == "Lyle");
             SolutionSearch();
             GenerateResult();
 
             return Result;
-        }
-
-        private void GenerateResult()
-        {
-            // Return the solution(s) with the least steps - I anticipate that occasionally there may be more than 1 solution from Start - End
-            var shortestSolution = Solutions.OrderBy(s => s.Count).FirstOrDefault();
-
-            if (shortestSolution == null)
-            {
-                _output.Unsuccessful(Result);
-            }
-            else
-            {
-                Result.Steps = shortestSolution.Select(ss => new { ss.Key, ss.Value.Value })
-                                               .ToDictionary(d => d.Key, d => d.Value);
-                Result.Successful = true;
-                _output.Successful(Result);
-            }
         }
 
         private void SolutionSearch()
@@ -84,6 +65,24 @@ namespace ConsoleApplication.Logic
 
                     word.ConnectedWords.AddRange(matchingTemplateWords);
                 }
+            }
+        }
+
+        private void GenerateResult()
+        {
+            // Return the solution(s) with the least steps - I anticipate that occasionally there may be more than 1 solution from Start - End
+            var shortestSolution = Solutions.OrderBy(s => s.Count).FirstOrDefault();
+
+            if (shortestSolution == null)
+            {
+                _output.Unsuccessful(Result);
+            }
+            else
+            {
+                Result.Steps = shortestSolution.Select(ss => new { ss.Key, ss.Value.Value })
+                                               .ToDictionary(d => d.Key, d => d.Value);
+                Result.Successful = true;
+                _output.Successful(Result);
             }
         }
 
