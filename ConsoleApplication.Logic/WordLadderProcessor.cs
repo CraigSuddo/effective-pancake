@@ -29,7 +29,6 @@ namespace ConsoleApplication.Logic
             SetupWords();
             SolutionSearch();
             GenerateResult();
-
             return Result;
         }
 
@@ -74,9 +73,7 @@ namespace ConsoleApplication.Logic
             var shortestSolution = Solutions.OrderBy(s => s.Count).FirstOrDefault();
 
             if (shortestSolution == null)
-            {
                 _output.Unsuccessful(Result);
-            }
             else
             {
                 Result.Steps = shortestSolution.Select(ss => new { ss.Key, ss.Value.Value })
@@ -91,7 +88,6 @@ namespace ConsoleApplication.Logic
             foreach (var connectedWord in word.ConnectedWords.Where(cw => !currentChain.Select(cc => cc.Value).Contains(cw.Value)))
             {
                 currentChain.Add(connectedWord);
-                //Console.WriteLine($"Current Chain (d:{searchDepth}) : {string.Join(",", currentChain.Select(cc => cc.Value).ToList())}");
                 if (connectedWord.Value.ToUpperInvariant() == _config.EndWord.ToUpperInvariant())
                 {
                     // Solution found!
