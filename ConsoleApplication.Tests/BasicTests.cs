@@ -104,7 +104,7 @@ namespace ConsoleApplication.Tests
             Assert.AreEqual(string.Join(",", expectedResult), string.Join(",", result.Steps));
         }
 
-        private List<string> GetFullWords()
+        private static List<string> GetFullWords()
         {
             var lines = File.ReadAllLines("words-english.txt");
             return lines.Select(l => l).ToList();
