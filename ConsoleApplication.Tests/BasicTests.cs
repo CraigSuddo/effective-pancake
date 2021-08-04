@@ -10,8 +10,7 @@ namespace ConsoleApplication.Tests
         [TestMethod]
         public void InitialTest()
         {
-            // The processor needs some work before it can be tested better.
-
+            // This tests purpose is just to check that the solution works to begin with.
             // Arrange
             var config = new TestWordLadderConfiguration
             {

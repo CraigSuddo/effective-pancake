@@ -19,7 +19,9 @@ namespace ConsoleApplication.Logic
             SetupPotentialMatches();
             ConnectedWords = new List<Word>();
         }
-
+        /// <summary>
+        /// Creates the joining templates so that when querying you can join elements together based on their templates. This creates routes between nodes.
+        /// </summary>
         private void SetupPotentialMatches()
         {
             Templates = new List<string>();

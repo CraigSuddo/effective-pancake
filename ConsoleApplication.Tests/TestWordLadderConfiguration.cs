@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace ConsoleApplication.Tests
 {
+    /// <summary>
+    /// This class is provided as an implementation of the configuration specifically for tests.
+    /// </summary>
     internal class TestWordLadderConfiguration : IWordLadderProcessorConfiguration
     {
         public List<string> Words { get; set; }

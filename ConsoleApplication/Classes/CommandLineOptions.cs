@@ -17,5 +17,10 @@ namespace ConsoleApplication.Classes
 
         public List<string> Words { get; set; }
         public int WordLength { get; set; }
+
+        public CommandLineOptions()
+        {
+            WordLength = 4;
+        }
     }
 }

@@ -2,8 +2,10 @@
 using ConsoleApplication.Classes;
 using ConsoleApplication.Logic;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using System;
 using System.IO;
+using System.Linq;
 
 namespace ConsoleApplication
 {
@@ -13,11 +15,9 @@ namespace ConsoleApplication
         /// Configures the application using the provided arguments, and sets this application up as a Console application.
         /// </summary>
         /// <param name="args">The console paramaters provided to the application.</param>
-        internal static void Configure(string[] args)
+        internal static IHostBuilder Configure(string[] args)
         {
-            // Set up the DI Service.
-            var provider = new ServiceCollection();
-
+            var host = Host.CreateDefaultBuilder(args);
             // Process the args
             Parser.Default.ParseArguments<CommandLineOptions>(args)
                    .WithParsed(o =>
@@ -28,10 +28,16 @@ namespace ConsoleApplication
                            return;
                        }
 
-                       // Add the configuration to DI.
-                       provider.AddSingleton<IWordLadderProcessorConfiguration>(o);
+                       o.Words = File.ReadAllLines(o.DictionaryFile).ToList();
+
+                       host.ConfigureServices((_, services) =>
+                           {
+                               services.AddSingleton<IWordLadderProcessorConfiguration>(o);
+                               services.AddTransient<IWordLadderProcessor, WordLadderProcessor>();
+                           });
                    });
 
+            return host;
         }
 
         /// <summary>
@@ -61,14 +67,14 @@ namespace ConsoleApplication
                 hasErrors = true;
             }
 
-            if (string.IsNullOrEmpty(o.ResultFile) || File.Exists(o.ResultFile))
+            if (string.IsNullOrEmpty(o.ResultFile))
             {
 
                 Console.WriteLine("Result File not provided or already exists.");
                 hasErrors = true;
             }
 
-            return hasErrors;
+            return !hasErrors;
         }
     }
 }
